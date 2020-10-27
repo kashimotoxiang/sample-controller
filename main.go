@@ -24,6 +24,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/klog/v2"
+
 	// Uncomment the following line to load the gcp plugin (only required to authenticate against GKE clusters).
 	// _ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 
@@ -49,16 +50,17 @@ func main() {
 		klog.Fatalf("Error building kubeconfig: %s", err.Error())
 	}
 
-	kubeClient, err := kubernetes.NewForConfig(cfg)
+	kubeClient, err := kubernetes.NewForConfig(cfg) // kubeClient 除了自定义资源组别不能操作, 其它都能操作.
 	if err != nil {
 		klog.Fatalf("Error building kubernetes clientset: %s", err.Error())
 	}
 
-	exampleClient, err := clientset.NewForConfig(cfg)
+	exampleClient, err := clientset.NewForConfig(cfg) // exampleClient 只能操作相关的自定义资源组别.
 	if err != nil {
 		klog.Fatalf("Error building example clientset: %s", err.Error())
 	}
 
+	// informer 核心组件, 作用是watch和listk8s 资源, 然后将资源本地化, 减低对apiServer的压力. 在上面的前两行代码中根据客户端且设置重新同步时间间隔为 30 秒, 返回对应资源InformerFactory对象, 用于生产Informer对象. NewController的Informer对象有原生的DeploymentsInformer和自定义资源的FoosInformer对象.
 	kubeInformerFactory := kubeinformers.NewSharedInformerFactory(kubeClient, time.Second*30)
 	exampleInformerFactory := informers.NewSharedInformerFactory(exampleClient, time.Second*30)
 

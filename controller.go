@@ -64,24 +64,24 @@ const (
 // Controller is the controller implementation for Foo resources
 type Controller struct {
 	// kubeclientset is a standard kubernetes clientset
-	kubeclientset kubernetes.Interface
+	kubeclientset kubernetes.Interface // 标准k8s客户端工具
 	// sampleclientset is a clientset for our own API group
-	sampleclientset clientset.Interface
+	sampleclientset clientset.Interface // 自定义API组别客户端工具
 
-	deploymentsLister appslisters.DeploymentLister
-	deploymentsSynced cache.InformerSynced
-	foosLister        listers.FooLister
-	foosSynced        cache.InformerSynced
+	deploymentsLister appslisters.DeploymentLister // Deployment列表对象
+	deploymentsSynced cache.InformerSynced         // Deployment同步状态
+	foosLister        listers.FooLister            // Foo列表对象
+	foosSynced        cache.InformerSynced         // Foo同步状态
 
 	// workqueue is a rate limited work queue. This is used to queue work to be
 	// processed instead of performing it as soon as a change happens. This
 	// means we can ensure we only process a fixed amount of resources at a
 	// time, and makes it easy to ensure we are never processing the same item
 	// simultaneously in two different workers.
-	workqueue workqueue.RateLimitingInterface
+	workqueue workqueue.RateLimitingInterface // 工作队列意味着每次只能处理一次事件
 	// recorder is an event recorder for recording Event resources to the
 	// Kubernetes API.
-	recorder record.EventRecorder
+	recorder record.EventRecorder // 事件记录器
 }
 
 // NewController returns a new sample controller
